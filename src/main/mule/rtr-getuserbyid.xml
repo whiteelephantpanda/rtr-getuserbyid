@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="7c34d90b-c457-48c2-ac60-835be5bef725" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="6cc89815-7e61-4bea-ac59-cef571f82e44" >
+		<db:my-sql-connection host="mysql.irtr.app" port="3306" database="rtr_dev" user="rtrdevusr" password="rtr@2021"/>
+	</db:config>
+	<flow name="mule-test-repositoryFlow" doc:id="e3043f75-5703-4200-aa02-25a81daa1332" >
+		<http:listener doc:name="Listener" doc:id="44e6e7c3-9485-4a53-ab42-cc896fda98f7" config-ref="HTTP_Listener_config" path="/mule-test/{userId}"/>
+		<db:select doc:name="Select" doc:id="4a312860-3c40-4be8-9013-40f1729862e8" config-ref="Database_Config">
+			<db:sql >SELECT FIRST_NAME,LAST_NAME, USER_ID FROM USER WHERE USER_ID=:userId</db:sql>
+			<db:input-parameters ><![CDATA[#[userId: attributes.uriParams.userId]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="d1ba8a26-5dfe-45b0-b685-860eef8473ba">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="80934567-0280-4cb7-995c-13b92b6409ac" message='#["Logger 1"]'/>
+	</flow>
+	
+	
+	
+	
+	</mule>
