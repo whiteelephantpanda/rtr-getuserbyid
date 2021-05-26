@@ -31,7 +31,9 @@ payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="80934567-0280-4cb7-995c-13b92b6409ac" message='#["Logger 1"]'/>
-	</flow>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="e2404db9-3958-4af0-af54-fc2f38d4dd00" />
+	
+</flow>
 	
 	
 	
